@@ -1,0 +1,50 @@
+<template>
+    <lightning-card title={category}>
+        <template if:true={items}>
+            <template for:each={items} for:item="item">
+                <c-todo-card key={item.Id} item={item} onrefresh={handleRefresh}>
+                </c-todo-card>
+            </template>
+        </template>
+        <template if:false={items}>
+            <lightning-formatted-text value="Create your first Todo!"></lightning-formatted-text>
+        </template>
+        <lightning-button variant="Neutral" label="Add a new ToDo" icon-name="utility:add" icon-position="right"
+            onclick={handleCreateToDo}>
+        </lightning-button>
+    </lightning-card>
+    <template if:true={formShown}>
+        <section role="dialog" tabindex="-1" aria-labelledby="modal-heading-01" aria-modal="true"
+            aria-describedby="modal-content-id-1" class="slds-modal slds-fade-in-open">
+            <div class="slds-modal__container">
+                <lightning-card>
+                    <lightning-record-edit-form object-api-name={objectApiName}>
+                        <lightning-messages>
+                        </lightning-messages>
+                        <lightning-input-field field-name={nameField}>
+                        </lightning-input-field>
+                        <lightning-input-field field-name={categoryField} value={category}>
+                        </lightning-input-field>
+                        <lightning-input-field field-name={completedField}>
+                        </lightning-input-field>
+                        <lightning-input-field field-name={descriptionField}>
+                        </lightning-input-field>
+                        <lightning-input-field field-name={dueDateField}>
+                        </lightning-input-field>
+                        <lightning-input-field field-name={priorityField}>
+                        </lightning-input-field>
+                        <lightning-input-field field-name={reminderField}>
+                        </lightning-input-field>
+                        <lightning-button variant="destructive" label="Close" title="Destructive action"
+                            onclick={handleCloseForm} class="slds-m-left_x-small">
+                        </lightning-button>
+                        <lightning-button variant="success" class="slds-m-left_x-small" type="submit"
+                            label="Create new">
+                        </lightning-button>
+                    </lightning-record-edit-form>
+                </lightning-card>
+            </div>
+        </section>
+        <div class="slds-backdrop slds-backdrop_open"></div>
+    </template>
+</template>
