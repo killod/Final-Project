@@ -1,24 +1,31 @@
 <template>
     <lightning-card title={category}>
+        <div class="slds-scrollable_y" style="height:20rem">
         <template if:true={items}>
             <template for:each={items} for:item="item">
-                <c-todo-card key={item.Id} item={item} onrefresh={handleRefresh}>
+                <c-todo-card key={item.Id} item={item}>
                 </c-todo-card>
             </template>
         </template>
         <template if:false={items}>
             <lightning-formatted-text value="Create your first Todo!"></lightning-formatted-text>
         </template>
-        <lightning-button variant="Neutral" label="Add a new ToDo" icon-name="utility:add" icon-position="right"
+        </div>
+        <lightning-button
+            class="slds-m-left_small"
+            variant="Neutral" 
+            label="Add ToDo" 
+            icon-name="utility:add"
             onclick={handleCreateToDo}>
         </lightning-button>
     </lightning-card>
+
     <template if:true={formShown}>
         <section role="dialog" tabindex="-1" aria-labelledby="modal-heading-01" aria-modal="true"
             aria-describedby="modal-content-id-1" class="slds-modal slds-fade-in-open">
             <div class="slds-modal__container">
                 <lightning-card>
-                    <lightning-record-edit-form object-api-name={objectApiName}>
+                    <lightning-record-edit-form object-api-name={objectApiName} onsuccess={handleSuccessCreate}>
                         <lightning-messages>
                         </lightning-messages>
                         <lightning-input-field field-name={nameField}>

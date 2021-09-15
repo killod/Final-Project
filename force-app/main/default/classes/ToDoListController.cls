@@ -10,6 +10,8 @@ public with sharing class ToDoListController {
             FROM Todo__c
             WHERE (Name LIKE :key) OR (Description__c LIKE :key)
             WITH SECURITY_ENFORCED
+            ORDER BY Id
+            LIMIT 1000
         ];
     }  
 }

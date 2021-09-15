@@ -7,13 +7,13 @@
             <div class="slds-col slds-size_10-of-12">
             </div>
             <div class="slds-col slds-size_4-of-12">
-                <c-todo-list items={todays} category="Today"></c-todo-list>
+                <c-todo-list items={todays} category="Today" onrefresh={handleRefresh}></c-todo-list>
             </div>
             <div class="slds-col slds-size_4-of-12">
-                <c-todo-list items={tomorrows} category="Tomorrow"></c-todo-list>
+                <c-todo-list items={tomorrows} category="Tomorrow" onrefresh={handleRefresh}></c-todo-list>
             </div>
             <div class="slds-col slds-size_4-of-12">
-                <c-todo-list items={laters} category="Later"></c-todo-list>
+                <c-todo-list items={laters} category="Later" onrefresh={handleRefresh}></c-todo-list>
             </div>
         </div>
     </lightning-card>

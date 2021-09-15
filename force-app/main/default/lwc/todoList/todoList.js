@@ -33,9 +33,11 @@ export default class TodoList extends LightningElement {
 
     handleCloseForm(){
         this.formShown = false;
+
     }
 
     handleSuccessCreate(){
-
+        this.dispatchEvent(new CustomEvent('refresh'));
+        this.formShown = false;
     }
 }

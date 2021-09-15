@@ -40,7 +40,10 @@ export default class TodoCard extends LightningElement {
         deleteRecord(this.item.Id)
             .then(() => {
                 this.detailShown = false;
-                this.dispatchEvent(new CustomEvent('refresh'));
+                this.dispatchEvent(new CustomEvent('refresh',{
+                    bubbles: true,
+                    composed: true
+                }));
                 this.dispatchEvent(
                     new ShowToastEvent({
                         title: 'Success',
@@ -63,5 +66,13 @@ export default class TodoCard extends LightningElement {
     handleEditToDo(){
         this.detailShown = false;
         this.editFormShown = true;
+    }
+
+    handleEditSave(){
+        this.dispatchEvent(new CustomEvent('refresh',{
+            bubbles: true,
+            composed: true
+        }));
+        this.editFormShown = false;
     }
 }
