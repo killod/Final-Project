@@ -13,7 +13,7 @@ public with sharing class ToDosBatch implements Database.Batchable<sObject> {
         List<ToDo__c> oldToDos = new List<ToDo__c>();
         Date dateNumberOfMonthsAgo = Date.today().addMonths(-numberOfMonths);
         for (ToDo__c toDo : scope) {
-            if (toDo.Completed__c && toDo.CreationDate__c < dateNumberOfMonthsAgo) {
+            if (toDo.Completed__c && toDo.CreatedDate < dateNumberOfMonthsAgo) {
                 oldToDos.add(toDo);
             }
         }

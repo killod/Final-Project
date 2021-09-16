@@ -139,7 +139,7 @@ public with sharing class ToDoHelper {
     @Future(Callout = true)
     public static void makePatchCallout(List<Id> toDosId) {
         List<ToDo__c> toDoList = [
-                SELECT Id, Name, Category__c, Completed__c, CreationDate__c, Description__c, DueDate__c, Priority__c, Reminder__c, SameToDoId__c
+                SELECT Id, Name, Category__c, Completed__c, CreatedDate, Description__c, DueDate__c, Priority__c, Reminder__c, SameToDoId__c
                 FROM ToDo__c
                 WHERE Id IN :toDosId
         ];
