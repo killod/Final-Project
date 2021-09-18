@@ -8,7 +8,7 @@ public with sharing class ToDoTriggerHandler {
 
     public static void handleBeforeUpdate(List<ToDo__c> newList, Map<Id, ToDo__c> newMap, List<ToDo__c> oldList, Map<Id, ToDo__c> oldMap) {
         ToDoHelper.updateQueueField(newList, oldMap);
-        ToDoHelper.fillRecordType(newList);
+        ToDoHelper.fillRecordType(newList, oldMap);
     }
 
 
@@ -19,7 +19,7 @@ public with sharing class ToDoTriggerHandler {
     public static void handleAfterInsert(List<ToDo__c> newList, Map<Id, ToDo__c> newMap) {
         Boolean toDosAreNew = false;
         for (ToDo__c toDo : newMap.values()) {
-            if (toDo.SameToDoId__c == null){
+            if (toDo.SameToDoId__c == null) {
                 toDosAreNew = true;
                 break;
             }
@@ -33,7 +33,6 @@ public with sharing class ToDoTriggerHandler {
 
     public static void handleAfterUpdate(List<ToDo__c> newList, Map<Id, ToDo__c> newMap, List<ToDo__c> oldList, Map<Id, ToDo__c> oldMap) {
         List<Id> toDosId = new List<Id>(newMap.keySet());
-        System.debug(toDosId);
         ToDoHelper.makePatchCallout(toDosId);
     }
 
@@ -44,8 +43,7 @@ public with sharing class ToDoTriggerHandler {
         for (ToDo__c toDo : oldList) {
             if (toDo.SameToDoId__c == null) {
                 listForDeleteBySameToDoId.add(toDo.Id);
-            }
-            else {
+            } else {
                 listForDeleteById.add(toDo.SameToDoId__c);
             }
         }

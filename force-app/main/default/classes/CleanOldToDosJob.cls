@@ -1,4 +1,4 @@
-global with sharing class CleanOldToDos  implements Schedulable {
+global with sharing class CleanOldToDosJob implements Schedulable {
 
     global void execute(SchedulableContext ctx) {
         ToDosBatch batchToDos = new ToDosBatch();

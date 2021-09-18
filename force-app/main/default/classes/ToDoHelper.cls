@@ -1,6 +1,6 @@
 public with sharing class ToDoHelper {
 
-    public static void fillRecordType(List<ToDo__c> newList){
+    public static void fillRecordType(List<ToDo__c> newList) {
         for (ToDo__c toDo : newList) {
             switch on toDo.Category__c {
                 when 'Today' {
@@ -17,12 +17,33 @@ public with sharing class ToDoHelper {
     }
 
 
-    public static void updateQueueField(List<ToDo__c> newList, Map<Id, ToDo__c> oldMap){
+    public static void fillRecordType(List<ToDo__c> newList, Map<Id, ToDo__c> oldMap) {
+        for (ToDo__c toDo : newList) {
+            if (toDo.Category__c != oldMap.get(toDo.Id).Category__c) {
+                switch on toDo.Category__c {
+                    when 'Today' {
+                        toDo.RecordTypeId = Schema.SObjectType.ToDo__c.getRecordTypeInfosByName().get('Today').getRecordTypeId();
+                    }
+                    when 'Tomorrow' {
+                        todo.RecordTypeId = Schema.SObjectType.ToDo__c.getRecordTypeInfosByName().get('Tomorrow').getRecordTypeId();
+                    }
+                    when 'Later' {
+                        toDo.RecordTypeId = Schema.SObjectType.ToDo__c.getRecordTypeInfosByName().get('Later').getRecordTypeId();
+                    }
+                }
+            }
+        }
+    }
+
+
+    public static void updateQueueField(List<ToDo__c> newList, Map<Id, ToDo__c> oldMap) {
         List<Group> queueList = [SELECT Id FROM Group WHERE Type = 'Queue' AND (Name = 'Today Queue' OR Name = 'Tomorrow Queue' OR Name = 'Later Queue')];
         Map<Id, Group> queueMap = new Map<Id, Group>(queueList);
         List<ToDo__c> toDosListForUpdateQueueField = new List<ToDo__c>();
         for (ToDo__c toDo : newList) {
             if (toDo.Category__c != oldMap.get(toDo.Id).Category__c && queueMap.keySet().contains(toDo.OwnerId)) {
+                toDosListForUpdateQueueField.add(toDo);
+            } else if (toDo.Category__c == oldMap.get(toDo.Id).Category__c && toDo.OwnerId != oldMap.get(toDo.Id).OwnerId && queueMap.keySet().contains(toDo.OwnerId)) {
                 toDosListForUpdateQueueField.add(toDo);
             }
         }
@@ -32,7 +53,7 @@ public with sharing class ToDoHelper {
     }
 
 
-    public static void assignmentToDoToQueue(List<ToDo__c> toDosList){
+    public static void assignmentToDoToQueue(List<ToDo__c> toDosList) {
         Group todayQueue = [SELECT Id, Name FROM Group WHERE Type = 'Queue' AND Name = 'Today Queue' LIMIT 1];
         Group tomorrowQueue = [SELECT Id, Name FROM Group WHERE Type = 'Queue' AND Name = 'Tomorrow Queue' LIMIT 1];
         Group laterQueue = [SELECT Id, Name FROM Group WHERE Type = 'Queue' AND Name = 'Later Queue' LIMIT 1];
@@ -59,7 +80,6 @@ public with sharing class ToDoHelper {
         fillGenerator(listForDeleteById, generator, 'ById');
         fillGenerator(listForDeleteBySameToDoId, generator, 'BySameToDoId');
         generator.writeEndObject();
-
         String jsonString = generator.getAsString();
         System.debug('jsonMaterials' + jsonString);
 
@@ -116,7 +136,6 @@ public with sharing class ToDoHelper {
         }
         generator.writeEndArray();
         String jsonString = generator.getAsString();
-        System.debug('jsonMaterials' + jsonString);
 
         HttpRequest request = new HttpRequest();
         request.setEndpoint('callout:secondOrg/services/apexrest/ToDo__c/');
@@ -129,7 +148,6 @@ public with sharing class ToDoHelper {
         try {
             response = http.send(request);
             System.debug(response.getStatus());
-            System.debug(response.getBody());
         } catch (System.CalloutException e) {
             System.debug(e.getCause() + ' ' + e.getMessage());
         }
@@ -139,13 +157,24 @@ public with sharing class ToDoHelper {
     @Future(Callout = true)
     public static void makePatchCallout(List<Id> toDosId) {
         List<ToDo__c> toDoList = [
-                SELECT Id, Name, Category__c, Completed__c, CreatedDate, Description__c, DueDate__c, Priority__c, Reminder__c, SameToDoId__c
+                SELECT Id, Name, Category__c, Completed__c, CreatedDate, Description__c, DueDate__c, Priority__c, Reminder__c, SameToDoId__c, OwnerId
                 FROM ToDo__c
                 WHERE Id IN :toDosId
         ];
+        Group todayQueue = [SELECT Id, Name FROM Group WHERE Type = 'Queue' AND Name = 'Today Queue' LIMIT 1];
+        Group tomorrowQueue = [SELECT Id, Name FROM Group WHERE Type = 'Queue' AND Name = 'Tomorrow Queue' LIMIT 1];
+        Group laterQueue = [SELECT Id, Name FROM Group WHERE Type = 'Queue' AND Name = 'Later Queue' LIMIT 1];
         JSONGenerator generator = JSON.createGenerator(true);
         generator.writeStartArray();
         for (ToDo__c toDo : toDoList) {
+            generator.writeStartObject();
+            if (toDo.OwnerId != todayQueue.Id && toDo.OwnerId != tomorrowQueue.Id && toDo.OwnerId != laterQueue.Id) {
+                generator.writeStringField('OwnerToDo', 'user');
+            }
+            else {
+                generator.writeStringField('OwnerToDo', 'queue');
+            }
+            generator.writeFieldName('ToDo');
             generator.writeStartObject();
             generator.writeStringField('Id', toDo.Id);
             generator.writeStringField('Name', toDo.Name);
@@ -158,6 +187,7 @@ public with sharing class ToDoHelper {
             generator.writeStringField('Priority__c', todo.Priority__c);
             generator.writeStringField('Reminder__c', toDo.Reminder__c);
             generator.writeStringField('SameToDoId__c', (toDo.SameToDoId__c == null) ? '' : toDo.SameToDoId__c);
+            generator.writeEndObject();
             generator.writeEndObject();
         }
         generator.writeEndArray();
