@@ -14,10 +14,6 @@ trigger ToDoTrigger on ToDo__c (
         ToDoTriggerHandler.handleBeforeUpdate(Trigger.new, Trigger.newMap, Trigger.old, Trigger.oldMap);
     }
 
-    if (Trigger.isBefore && Trigger.isDelete) {
-        //Trigger.old, Trigger.oldMap
-    }
-
     if (Trigger.isAfter && Trigger.isInsert) {
         ToDoTriggerHandler.handleAfterInsert(Trigger.new, Trigger.newMap);
     }
@@ -28,9 +24,5 @@ trigger ToDoTrigger on ToDo__c (
 
     if (Trigger.isAfter && Trigger.isDelete) {
         ToDoTriggerHandler.handleAfterDelete(Trigger.old, Trigger.oldMap);
-    }
-
-    if (Trigger.isAfter && Trigger.isUndelete) {
-        //Trigger.new, Trigger.newMap
     }
 }
