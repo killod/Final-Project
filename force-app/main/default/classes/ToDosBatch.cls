@@ -4,7 +4,7 @@ public with sharing class ToDosBatch implements Database.Batchable<sObject> {
 
     public Database.QueryLocator start(Database.BatchableContext bc) {
         return Database.getQueryLocator(
-                'SELECT Id, CreationDate__c, Completed__c FROM ToDo__c '
+                'SELECT Id, CreatedDate, Completed__c FROM ToDo__c '
         );
     }
 
