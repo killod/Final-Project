@@ -4,6 +4,6 @@
     <protected>false</protected>
     <values>
         <field>NumberOfMonths__c</field>
-        <value xsi:type="xsd:double">3.0</value>
+        <value xsi:type="xsd:double">-2.0</value>
     </values>
 </CustomMetadata>

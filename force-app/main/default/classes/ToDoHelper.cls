@@ -131,7 +131,7 @@ public with sharing class ToDoHelper {
             }
             generator.writeStringField('Priority__c', todo.Priority__c);
             generator.writeStringField('Reminder__c', toDo.Reminder__c);
-            generator.writeStringField('SameToDoId__c', todo.Id);
+            generator.writeStringField('SameToDoId__c', toDo.Id);
             generator.writeEndObject();
         }
         generator.writeEndArray();
