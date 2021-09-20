@@ -25,16 +25,16 @@
                     <lightning-formatted-text value={item.Category__c}>
                     </lightning-formatted-text>
                     <p>
-                        <lightning-formatted-date-time value={item.Completed__c}>
+                        <lightning-formatted-text value={item.Completed__c}>
+                        </lightning-formatted-text>
+                    </p>
+                    <p>
+                        <lightning-formatted-date-time value={item.DueDate__c}>
                         </lightning-formatted-date-time>
                     </p>
                     <p>
-                        <lightning-formatted-text value={item.CreationDate__c}>
-                        </lightning-formatted-text>
-                    </p>
-                    <p>
-                        <lightning-formatted-text value={item.DueDate__c}>
-                        </lightning-formatted-text>
+                        <lightning-formatted-time value={item.DueDate__c}>
+                        </lightning-formatted-time>
                     </p>
                     <p>
                         <lightning-formatted-text value={item.Description__c}>
@@ -49,16 +49,41 @@
                         </lightning-formatted-text>
                     </p>
                     <template for:each={item.SubToDos__r} for:item="subtodo">
-                        <p key={subtodo.Id}>
-                            <lightning-formatted-text value={subtodo.Name}></lightning-formatted-text>
-                        </p>
-                        <p key={subtodo.Id}>
-                            <lightning-formatted-text value={subtodo.Description__c}></lightning-formatted-text>
-                        </p>
+                        <div class="slds-box slds-grid slds-wrap" key={subtodo.Id}>
+                            <div class="slds-col slds-size_2-of-12">
+                                <lightning-input type="checkbox"
+                                    label="Completed?" param={subtodo.Descriptio__c}
+                                    checked={subtodo.Completed__c}
+                                    value={subtodo.Id} onclick={handleUpdateSubToDo}>
+                                </lightning-input>
+                            </div>
+                            <div class="slds-col slds-size_9-of-12">
+                                <p>
+                                    <lightning-formatted-text value={subtodo.Name}></lightning-formatted-text>
+                                </p>
+                                <p>
+                                    <lightning-formatted-text value={subtodo.Description__c}></lightning-formatted-text>
+                                </p>
+                            </div>
+                            <div class="slds-col slds-size_1-of-12">
+                                <lightning-button-icon 
+                                    variant="container" 
+                                    value={subtodo.Id} 
+                                    alternative-text="Delete SubToDo" 
+                                    title="Delete SubToDo" 
+                                    onclick={handleDeleteSubToDo} 
+                                    icon-name="utility:delete">
+                                </lightning-button-icon>
+                            </div>
+                        </div>
                     </template>
-                    <lightning-button variant="neutral" onclick={handleCreateSubToDo} icon-name="utility:add"
-                        class="slds-m-left_x-small">
-                    </lightning-button>
+                    <lightning-button-icon 
+                        variant="container" 
+                        icon-name="utility:add" 
+                        alternative-text="Add SubToDo" 
+                        title="Add SubToDo" 
+                        onclick={handleCreateSubToDo}>
+                    </lightning-button-icon>
                 </div>
                 <div class="slds-modal__footer slds-modal__footer_directional">
                     <lightning-button variant="neutral" label="Close" onclick={handleCloseButton}
@@ -109,6 +134,35 @@
                         </lightning-button>
                     </div>
                 </lightning-record-edit-form>
+            </div>
+        </section>
+        <div class="slds-backdrop slds-backdrop_open"></div>
+    </template>
+
+    <template if:true={subToDoCreationFormShown}>
+        <section role="dialog" tabindex="-1" aria-labelledby="modal-heading-01" aria-modal="true"
+            aria-describedby="modal-content-id-1" class="slds-modal slds-fade-in-open">
+            <div class="slds-modal__container">
+                <lightning-card>
+                    <lightning-record-edit-form object-api-name={subBbjectApiName} onsuccess={handleSuccessCreate}>
+                        <lightning-messages>
+                        </lightning-messages>
+                        <lightning-input-field field-name={subNameField}>
+                        </lightning-input-field>
+                        <lightning-input-field field-name={subDescriptionField}>
+                        </lightning-input-field>
+                        <lightning-input-field field-name={subCompletedField}>
+                        </lightning-input-field>
+                        <lightning-input-field field-name={subToDoField} value={item.Id}>
+                        </lightning-input-field>
+                        <lightning-button variant="destructive" label="Close" title="Destructive action"
+                            onclick={handleCloseForm} class="slds-m-left_x-small">
+                        </lightning-button>
+                        <lightning-button variant="success" class="slds-m-left_x-small" type="submit"
+                            label="Create new">
+                        </lightning-button>
+                    </lightning-record-edit-form>
+                </lightning-card>
             </div>
         </section>
         <div class="slds-backdrop slds-backdrop_open"></div>

@@ -1,4 +1,4 @@
-import { api, LightningElement, track, wire } from 'lwc';
+import { api, LightningElement} from 'lwc';
 import TODO_OBJECT from '@salesforce/schema/ToDo__c';
 import NAME_FIELD from '@salesforce/schema/ToDo__c.Name';
 import CATEGORY_FIELD from '@salesforce/schema/ToDo__c.Category__c';
