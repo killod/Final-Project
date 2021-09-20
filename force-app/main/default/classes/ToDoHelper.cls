@@ -75,6 +75,11 @@ public with sharing class ToDoHelper {
 
     @Future(Callout = true)
     public static void makeDeleteCallout(List<Id> listForDeleteById, List<Id> listForDeleteBySameToDoId) {
+        HttpResponse response = deleteCallout(listForDeleteById, listForDeleteBySameToDoId);
+    }
+
+
+    public static HttpResponse deleteCallout(List<Id> listForDeleteById, List<Id> listForDeleteBySameToDoId) {
         JSONGenerator generator = JSON.createGenerator(true);
         generator.writeStartObject();
         fillGenerator(listForDeleteById, generator, 'ById');
@@ -96,6 +101,7 @@ public with sharing class ToDoHelper {
         } catch (System.CalloutException e) {
             System.debug(e.getCause() + ' ' + e.getMessage());
         }
+        return response;
     }
 
 
@@ -113,6 +119,11 @@ public with sharing class ToDoHelper {
 
     @Future(Callout = true)
     public static void makePostCallout(List<Id> toDosId) {
+        HttpResponse response = postCallout(toDosId);
+    }
+
+
+    public static HttpResponse postCallout(List<Id> toDosId){
         List<ToDo__c> toDoList = [
                 SELECT Id, Name, Category__c, Completed__c, Description__c, DueDate__c, Priority__c, Reminder__c, SameToDoId__c
                 FROM ToDo__c
@@ -151,11 +162,17 @@ public with sharing class ToDoHelper {
         } catch (System.CalloutException e) {
             System.debug(e.getCause() + ' ' + e.getMessage());
         }
+        return response;
     }
 
 
     @Future(Callout = true)
     public static void makePatchCallout(List<Id> toDosId) {
+        HttpResponse response = patchCallout(toDosId);
+    }
+
+
+    public static HttpResponse patchCallout(List<Id> toDosId) {
         List<ToDo__c> toDoList = [
                 SELECT Id, Name, Category__c, Completed__c, CreatedDate, Description__c, DueDate__c, Priority__c, Reminder__c, SameToDoId__c, OwnerId
                 FROM ToDo__c
@@ -208,5 +225,6 @@ public with sharing class ToDoHelper {
         } catch (System.CalloutException e) {
             System.debug(e.getCause() + ' ' + e.getMessage());
         }
+        return response;
     }
 }
