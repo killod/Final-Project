@@ -22,6 +22,14 @@ public class TestDataFactory {
     }
 
 
+    public static List<Id> getIdsOfDummyListOfToDos(Integer count, String name, String category){
+        createDummyListOfToDos(count, name, category, true);
+        List<ToDo__c> toDos = [SELECT Id FROM ToDo__c];
+        Map<Id, ToDo__c> toDosMap = new Map<Id, ToDo__c>(toDos);
+        return new List<Id>(toDosMap.keySet());
+    }
+
+
     public static ToDo__c createDummyCompletedToDo(String name, String category, Boolean needInsert) {
         ToDo__c toDo = new ToDo__c(Name = name, Category__c = category, Completed__c = true);
         if (needInsert) {

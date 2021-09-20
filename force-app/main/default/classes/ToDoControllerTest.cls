@@ -117,4 +117,40 @@ private class ToDoControllerTest {
         System.assertEquals('High', toDos.get(0).Priority__c);
     }
 
+
+    @IsTest
+    static void updateToDosOwnerUserQueueTest() {
+        ToDo__c toDo = TestDataFactory.createDummyToDo('Test', 'Later', false);
+        User userId = [SELECT Id FROM User WHERE IsActive = TRUE LIMIT 1];
+        Group laterQueue = [SELECT Id, Name FROM Group WHERE Type = 'Queue' AND Name = 'Later Queue' LIMIT 1];
+        toDo.OwnerId = userId.Id;
+        insert toDo;
+        System.assertNotEquals(laterQueue.Id, toDo.OwnerId);
+        String jsonString = '[ {\n' +
+                '  "OwnerToDo" : "queue",\n' +
+                '  "ToDo" : {\n' +
+                '    "Id" : "' + toDo.Id + '",\n' +
+                '    "Name" : "name",\n' +
+                '    "Category__c" : "Later",\n' +
+                '    "Completed__c" : false,\n' +
+                '    "Description__c" : "",\n' +
+                '    "Priority__c" : "High",\n' +
+                '    "Reminder__c" : "Don’t remind me",\n' +
+                '    "SameToDoId__c" : ""\n' +
+                '  }\n' +
+                '} ]';
+        Test.startTest();
+        RestRequest req = new RestRequest();
+        RestResponse res = new RestResponse();
+        req.requestURI = '/services/apexrest/ToDo__c/';
+        req.httpMethod = 'PATCH';
+        RestContext.request = req;
+        RestContext.response = res;
+        req.requestBody = Blob.valueOf(jsonString);
+        ToDoController.updateToDos();
+        Test.stopTest();
+        List<ToDo__c> toDos = [SELECT Id, Category__c, OwnerId FROM ToDo__c WHERE Id = :toDo.Id];
+        System.assertEquals(1, toDos.size());
+        System.assertEquals(laterQueue.Id, toDos.get(0).OwnerId);
+    }
 }
