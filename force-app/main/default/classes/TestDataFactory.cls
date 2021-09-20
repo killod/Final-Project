@@ -73,4 +73,35 @@ public class TestDataFactory {
         }
         return cases;
     }
+
+
+    public static SubToDo__c createDummySubToDo(String name, Boolean needInsert) {
+        SubToDo__c subToDo = new SubToDo__c(Name = name);
+        ToDo__c toDo = createDummyToDo(name, 'Today', true);
+        subToDo.ToDo__c = toDo.Id;
+        if (needInsert) {
+            insert subToDo;
+        }
+        return subToDo;
+    }
+
+
+    public static List<SubToDo__c> createDummyListOfSubToDos(Integer count, String name, Boolean needInsert) {
+        List<SubToDo__c> subToDos = new List<SubToDo__c>();
+        for (Integer i = 0; i < count; i++) {
+            subToDos.add(createDummySubToDo(name, false));
+        }
+        if (needInsert) {
+            insert subToDos;
+        }
+        return subToDos;
+    }
+
+
+    public static List<Id> getIdsOfDummyListOfSubToDos(Integer count, String name) {
+        createDummyListOfSubToDos(count, name, true);
+        List<SubToDo__c> subToDos = [SELECT Id FROM SubToDo__c];
+        Map<Id, SubToDo__c> subToDosMap = new Map<Id, SubToDo__c>(subToDos);
+        return new List<Id>(subToDosMap.keySet());
+    }
 }

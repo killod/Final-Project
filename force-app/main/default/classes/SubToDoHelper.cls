@@ -2,6 +2,11 @@ public with sharing class SubToDoHelper {
 
     @Future(Callout = true)
     public static void makeDeleteCallout(List<Id> listForDeleteById, List<Id> listForDeleteBySameSubToDoId) {
+        HttpResponse response = deleteCallout(listForDeleteById, listForDeleteBySameSubToDoId);
+    }
+
+
+    public static HttpResponse deleteCallout(List<Id> listForDeleteById, List<Id> listForDeleteBySameSubToDoId) {
         JSONGenerator generator = JSON.createGenerator(true);
         generator.writeStartObject();
         fillGenerator(listForDeleteById, generator, 'ById');
@@ -24,6 +29,7 @@ public with sharing class SubToDoHelper {
         } catch (System.CalloutException e) {
             System.debug(e.getCause() + ' ' + e.getMessage());
         }
+        return response;
     }
 
 
@@ -41,6 +47,11 @@ public with sharing class SubToDoHelper {
 
     @Future(Callout = true)
     public static void makePostCallout(List<Id> subToDosId) {
+        HttpResponse response = postCallout(subToDosId);
+    }
+
+
+    public static HttpResponse postCallout(List<Id> subToDosId) {
         List<SubToDo__c> subToDoList = [
                 SELECT Id, Name, Description__c, Completed__c, SameSubToDoId__c, ToDo__c
                 FROM SubToDo__c
@@ -93,11 +104,17 @@ public with sharing class SubToDoHelper {
         } catch (System.CalloutException e) {
             System.debug(e.getCause() + ' ' + e.getMessage());
         }
+        return response;
     }
 
 
     @Future(Callout = true)
     public static void makePatchCallout(List<Id> subToDosId) {
+        HttpResponse response = patchCallout(subToDosId);
+    }
+
+
+    public static HttpResponse patchCallout(List<Id> subToDosId) {
         List<SubToDo__c> subToDoList = [
                 SELECT Id, Name, Description__c, Completed__c, SameSubToDoId__c
                 FROM SubToDo__c
@@ -132,5 +149,6 @@ public with sharing class SubToDoHelper {
         } catch (System.CalloutException e) {
             System.debug(e.getCause() + ' ' + e.getMessage());
         }
+        return response;
     }
 }

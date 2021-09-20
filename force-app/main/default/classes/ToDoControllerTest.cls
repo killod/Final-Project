@@ -53,39 +53,6 @@ private class ToDoControllerTest {
 
 
     @IsTest
-    static void updateToDosTest() {
-        ToDo__c toDo = TestDataFactory.createDummyToDo('Test', 'Today', true);
-        String jsonString = '[ {\n' +
-                '  "OwnerToDo" : "user",\n' +
-                '  "ToDo" : {\n' +
-                '    "Id" : "' + toDo.Id + '",\n' +
-                '    "Name" : "name",\n' +
-                '    "Category__c" : "Tomorrow",\n' +
-                '    "Completed__c" : false,\n' +
-                '    "Description__c" : "",\n' +
-                '    "Priority__c" : "Low",\n' +
-                '    "Reminder__c" : "Don’t remind me",\n' +
-                '    "SameToDoId__c" : "' + toDo.Id + '"\n' +
-                '  }\n' +
-                '} ]';
-        Test.startTest();
-        RestRequest req = new RestRequest();
-        RestResponse res = new RestResponse();
-        req.requestURI = '/services/apexrest/ToDo__c/';
-        req.httpMethod = 'PATCH';
-        RestContext.request = req;
-        RestContext.response = res;
-        req.requestBody = Blob.valueOf(jsonString);
-        ToDoController.updateToDos();
-        Test.stopTest();
-        List<ToDo__c> toDos = [SELECT Id, Category__c, Priority__c FROM ToDo__c WHERE Id = :toDo.Id];
-        System.assertEquals(1, toDos.size());
-        System.assertEquals('Tomorrow', toDos.get(0).Category__c);
-        System.assertEquals('Low', toDos.get(0).Priority__c);
-    }
-
-
-    @IsTest
     static void updateToDosOwnerQueueTest() {
         ToDo__c toDo = TestDataFactory.createDummyToDo('Test', 'Today', true);
         String jsonString = '[ {\n' +
@@ -112,7 +79,6 @@ private class ToDoControllerTest {
         ToDoController.updateToDos();
         Test.stopTest();
         List<ToDo__c> toDos = [SELECT Id, Category__c, Priority__c FROM ToDo__c WHERE Id = :toDo.Id];
-        System.assertEquals(1, toDos.size());
         System.assertEquals('Later', toDos.get(0).Category__c);
         System.assertEquals('High', toDos.get(0).Priority__c);
     }
@@ -120,11 +86,13 @@ private class ToDoControllerTest {
 
     @IsTest
     static void updateToDosOwnerUserQueueTest() {
-        ToDo__c toDo = TestDataFactory.createDummyToDo('Test', 'Later', false);
+        ToDo__c toDo = TestDataFactory.createDummyToDo('Test', 'Tomorrow', false);
         User userId = [SELECT Id FROM User WHERE IsActive = TRUE LIMIT 1];
         Group laterQueue = [SELECT Id, Name FROM Group WHERE Type = 'Queue' AND Name = 'Later Queue' LIMIT 1];
         toDo.OwnerId = userId.Id;
         insert toDo;
+        toDo.SameToDoId__c = toDo.Id;
+        update toDo;
         System.assertNotEquals(laterQueue.Id, toDo.OwnerId);
         String jsonString = '[ {\n' +
                 '  "OwnerToDo" : "queue",\n' +
