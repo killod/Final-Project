@@ -5,12 +5,13 @@ import findTodos from '@salesforce/apex/ToDoListController.findTodos';
 export default class TodoAppContainer extends LightningElement {
     
     searchKey;
-    @track
-    wiredToDos = [];
     todays;
     tomorrows;
     laters;
     error;
+
+    @track
+    wiredToDos = [];
     
     @wire(findTodos, { searchKey: '$searchKey'})
     wiredTodos(result){
