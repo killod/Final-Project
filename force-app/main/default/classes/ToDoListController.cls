@@ -17,7 +17,6 @@ public with sharing class ToDoListController {
 
     @AuraEnabled
     public static void updateSubToDo(SubToDo__c subtodo){
-        System.debug(subtodo);
         if(subtodo != null){
             update subtodo;
         }
