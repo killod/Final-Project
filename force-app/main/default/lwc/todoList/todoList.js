@@ -19,10 +19,10 @@ export default class TodoList extends LightningElement {
     priorityField = PRIORITY_FIELD;
     reminderField = REMINDER_FIELD;
 
+    formShown = false;
+
     @api
     items;
-
-    formShown = false;
 
     @api
     category;

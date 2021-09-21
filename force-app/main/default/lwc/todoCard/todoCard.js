@@ -29,7 +29,7 @@ export default class TodoCard extends LightningElement {
     priorityField = PRIORITY_FIELD;
     reminderField = REMINDER_FIELD;
 
-    subBbjectApiName = SUBTODO_OBJECT;
+    subObjectApiName = SUBTODO_OBJECT;
     subNameField = SUB_NAME_FIELD;
     subDescriptionField = SUB_DESCRIPTION_FIELD;
     subCompletedField = SUB_COMPLETED_FIELD;
@@ -136,7 +136,7 @@ export default class TodoCard extends LightningElement {
     handleUpdateSubToDo(event){
         let subToDo = { 'sobjectType': 'SubToDo__c' };
         subToDo.Id = event.target.value;
-        subToDo.Completed__c = !event.target.checked;
+        subToDo.Completed__c = event.target.checked;
         updateSubToDo({subtodo: subToDo})
             .then(() => {
                 this.dispatchEvent(new CustomEvent('refresh',{
